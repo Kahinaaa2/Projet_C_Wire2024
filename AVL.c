@@ -81,8 +81,3 @@ Noeud *rotationDroite(Noeud *a){
     b->equilibre =0;
     return b;
 }
-
-//etape 4 test des rotation
-void test rotations(){
-    printf("La fonction est bien appelée. Merci !");
-}
