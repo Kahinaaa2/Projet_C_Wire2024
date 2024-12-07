@@ -83,7 +83,6 @@ Noeud *rotationDroite(Noeud *a){
 }
 
 //etape 4 test des rotation
-// je m'appelle Kahino et je suis un passioné d'informatique
 void test rotations(){
-    
+    printf("La fonction est bien appelée. Merci !");
 }
