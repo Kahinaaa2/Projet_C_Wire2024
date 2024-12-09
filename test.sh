@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 
@@ -15,4 +16,33 @@ if ! [ -f "help.txt" ] ; then
 	exit 1
 fi	
 
+if ! [ -f "c-wire_v00.dat" ] ; then
+	echo "le fichier de données n'existe pas"
+	exit 1
+fi
+
+nomCentrale=$2
+nomConsommateur=$3
+type="0"
+
+
+if [ "$nomCentrale" = "hvb" ] ; then
+	type="1"
+fi	
+
+
+if [ "$nomCentrale" = "hva" ] ; then
+	type="2"
+fi
+
+if [ "$nomCentrale" = "lv" ] ; then
+	type="3"
+fi
+
+echo $type
+
+
+
+echo "$nomCentrale"
+echo "$nomConsommateur"
 
