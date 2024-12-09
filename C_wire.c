@@ -78,3 +78,26 @@ AVLNode* inserer(AVLNode* racine, const char* id, const char* type, int capacite
 
     return racine;
 }
+
+
+
+
+
+
+
+
+int main() {
+    AVLNode* racine = NULL;
+
+    // Insertion de quelques nœuds avec des valeurs fictives
+    racine = inserer(racine, "1", "HV-B", 100, 200);
+    racine = inserer(racine, "2", "HV-A", 150, 100);
+    racine = inserer(racine, "3", "LV", 200, 50);
+
+    // Afficher la consommation de chaque station
+    printf("Consommation pour la station 1 : %d\n", racine->consommation);
+    printf("Consommation pour la station 2 : %d\n", racine->droit->consommation);
+    printf("Consommation pour la station 3 : %d\n", racine->gauche->consommation);
+
+    return 0;
+}
