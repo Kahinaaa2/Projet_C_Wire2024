@@ -63,9 +63,9 @@ if [ "$nomType" = "hvb" ] ; then
 		cat help.txt | head -17 | tail -n+15
 	else
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 2-8 | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7
+			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 2-8 | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" | ./exec > blabla.txt
 		else
-			cut -d ';' -f 2-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7
+			cut -d ';' -f 2-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" | ./exec > blabla.txt
 		fi
 	fi	
 fi	
@@ -78,9 +78,9 @@ if [ "$nomType" = "hva" ] ; then
 		cat help.txt | head -17 | tail -n+15
 	else
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 3-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-" | cut -d ';' -f 1,5,6
+			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 3-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec > blabla.txt
 		else
-			cut -d ';' -f 3-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-" | cut -d ';' -f 1,5,6
+			cut -d ';' -f 3-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec > blabla.txt
 		fi	
 	fi
 fi
@@ -88,25 +88,26 @@ fi
 if [ "$nomType" = "lv" ] ; then
 	if [ "$nomConsommateur" = "all" ] ; then
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5
+			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
 		else
-			cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5
+			cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
 		fi
 	fi
 	if [ "$nomConsommateur" = "indiv" ] ; then
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5
+			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
 		else
-			cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5
+			cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
 		fi	
 	fi
 	if [ "$nomConsommateur" = "comp" ] ; then
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5
+			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
 		else
-			cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5
+			cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
 		fi	
 	fi	
 fi
 
-
+#owk : s'informer rajouter colonne
+#tee : doc pour combiner
