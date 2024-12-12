@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 typedef struct AVL {
 	int identifiant; 
@@ -9,6 +10,23 @@ typedef struct AVL {
 	struct AVL* fg;
 	struct AVL* fd;
 }AVL; 
+
+int min(int a, int b){
+  
+   if(a > b){
+     return b;
+   }
+   return a;
+}
+
+int max(int a, int b){     
+
+   if(a > b){
+     return a;
+   }
+   return b;
+}
+   
 
 
 AVL* creationAVL(int nombre, int cap, int conso){
@@ -29,7 +47,7 @@ AVL* creationAVL(int nombre, int cap, int conso){
 
 AVL* rotationDroite(AVL* a){
 
-	AVL* p = a->fg
+	AVL* p = a->fg;
 	int eqa = a->eq;
 	int eqp = p->eq;
 
@@ -43,6 +61,10 @@ AVL* rotationDroite(AVL* a){
 }
 
 AVL* rotationGauche(AVL* a){
+	if(a==NULL){
+	  printf("err2\n");
+	  exit(2);
+	}  
 	
 	AVL* p = a->fd;
 	int eqa = a->eq;
@@ -58,18 +80,31 @@ AVL* rotationGauche(AVL* a){
 }
 
 AVL* doubleRotationDroite(AVL* a){
-	
+	if(a==NULL){
+	  printf("err3\n");
+	  exit(3);
+	} 
 	a->fg = rotationDroite(a->fg);
 	return rotationGauche(a);
 }
 
 AVL* doubleRotationGauche(AVL* a){
+	if(a==NULL){
+	  printf("err4\n");
+	  exit(4);
+	} 
 	
 	a->fd = rotationGauche(a->fd);
 	return rotationDroite(a);
 }
 
 AVL* equilibreAVL(AVL* a){
+
+
+	if(a==NULL){
+	  printf("err5\n");
+	  exit(5);
+	} 
 
 	if(a->eq <= -2){
 		if(a->fg->eq <= 0){
@@ -86,27 +121,34 @@ AVL* equilibreAVL(AVL* a){
 			return doubleRotationGauche(a);
 		}
 	}
+	
 
 	return a;
 }	
 
 AVL* insererAVL(AVL* a, int e, int v, int c, int *h){
 	if(a == NULL){
-		*h = 1;
+		*h = 0;
 		a=creationAVL(e, v, c);
+		
+		if(a==NULL){
+	 	   printf("err6\n");
+	 	   exit(6);
+		} 
+		
 		return a;
 	}
 	
 	else if(e<a->identifiant){
-		a->fg = insererAVL(a->fg, e, v, c);
+		a->fg = insererAVL(a->fg, e, v, c, h);
 		*h = -*h;
 	}
 
 	else if(e>a->identifiant){
-		a->fd = insererAVL(a->fd, e, v, c);
+		a->fd = insererAVL(a->fd, e, v, c, h);
 	}
 	
-	else if(e=a->identifiant){
+	else if(e==a->identifiant){
 		a->conso += c;
 		a->capacite +=v;
 	}
@@ -126,6 +168,7 @@ AVL* insererAVL(AVL* a, int e, int v, int c, int *h){
 		}else{
 			*h = 1;
 		}
+	}	
 
 	return a;
 }
@@ -147,76 +190,36 @@ void production (AVL* a){
 
 }
 
-void recuperationDonnees(AVL* a, FILE* f){
-	
-	if (a == NULL){
-		exit(3);
-	}
-
-	fprintf(f, "Station : %d,capacite : %d,  Consommation : %d\n", a->identifiant, a->capacite, a->conso); 
-
-	recuperationDonnees(a->fg, f);
-	recuperationDonnees(a->fd, f);
-
-}
+void affiche(AVL* a){
+   if(a!=NULL){
+     affiche(a->fg);
+     printf("%d;%d;%d\n",a->identifiant,a->capacite,a->conso);
+     affiche(a->fd);
+   }
+}     
 
 int main(){
-    	char v1, v2, v3;
-    	int sum2=0;
-    	int sum3=0;
-        int h = 0;
+  int v1,v2,v3;
+  AVL* station = NULL;
+  int h = 0;
 
- 	AVL* station = NULL; 
-	FILE* f = fopen("consommations.txt", "r");
-
-	if(f == NULL){
-		printf("Erreur lors de l'ouverture du fichier\n");
-		exit(4);
-	}
-
-
-    while(scanf("%c;%c;%c\n", &v1,&v2,&v3)==3){
-
-	    
-  /*      if(v1==0){
-            sum2+=v2;
-            sum3+=v3;
-        }
-    }
-    printf("0;%d;%d\n",sum2, sum3); */
-
-    	if(v2 == '-'){
-    	  v2 = 0;
-    	}
-    	else if(v3 == '-'){
-    	  v3 = 0;
-    	}
-    	else{ 
-    	  printf("problème dans les données récupérées\n\n");
-    	}    
-
-    	station = insererAVL(station, v1, v2, v3, h);
-    	
-	}
-
-	production(station);
-
-	recuperationDonnees(station, f);
-	
-	fclose(f);
-
-	printf("Les données sont enregistrées dans le fichier");
-
-    return 0;
-}
+  while(scanf("%d;%d;%d\n",&v1,&v2,&v3) == 3){
+ 	 //printf("%d %d %d\n",v1,v2,v3);
+ 	 station=insererAVL(station,v1,v2,v3,&h);
+ 	 //printf("15\n");
+  }	 
+  
+  //printf("45\n");
+  
+  affiche(station);
+  
+  return 0;
+}  
 
 
-    	//il faut qu'on parcourt avl et scanf les donnees somme puis les donner au shell
-    	//verifier la recup des donnees du shell
-    	//robustesse du programme
+
     	
 
 
 
 	
-
