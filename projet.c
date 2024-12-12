@@ -65,7 +65,7 @@ AVL* doubleRotationDroite(AVL* a){
 
 AVL* doubleRotationGauche(AVL* a){
 	
-	a->fd = rotationGauche(a->fg);
+	a->fd = rotationGauche(a->fd);
 	return rotationDroite(a);
 }
 
@@ -153,7 +153,7 @@ void recuperationDonnees(AVL* a, FILE* f){
 		exit(3);
 	}
 
-	fprintf(f, "Station : %d, Consommation : %d\n", a->identifiant, a->conso); 
+	fprintf(f, "Station : %d,capacite : %d,  Consommation : %d\n", a->identifiant, a->capacite, a->conso); 
 
 	recuperationDonnees(a->fg, f);
 	recuperationDonnees(a->fd, f);
@@ -164,10 +164,10 @@ int main(){
     	char v1, v2, v3;
     	int sum2=0;
     	int sum3=0;
-      int h = 0;
+        int h = 0;
 
  	AVL* station = NULL; 
-	FILE* f = fopen("consommations.txt", "w");
+	FILE* f = fopen("consommations.txt", "r");
 
 	if(f == NULL){
 		printf("Erreur lors de l'ouverture du fichier\n");
