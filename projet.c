@@ -3,15 +3,15 @@
 #include <math.h>
 
 typedef struct AVL {
-	int identifiant; 
-	int conso;
-	int capacite;
+	long identifiant; 
+	long conso;
+	long capacite;
 	int eq;
 	struct AVL* fg;
 	struct AVL* fd;
 }AVL; 
 
-int min(int a, int b){
+long min(long a, long b){
   
    if(a > b){
      return b;
@@ -19,7 +19,7 @@ int min(int a, int b){
    return a;
 }
 
-int max(int a, int b){     
+long max(long a, long b){     
 
    if(a > b){
      return a;
@@ -29,7 +29,7 @@ int max(int a, int b){
    
 
 
-AVL* creationAVL(int nombre, int cap, int conso){
+AVL* creationAVL(long nombre, long cap, long conso){
 	AVL* new = malloc(sizeof(AVL));
 	if(new == NULL){
 		exit (1);
@@ -126,7 +126,7 @@ AVL* equilibreAVL(AVL* a){
 	return a;
 }	
 
-AVL* insererAVL(AVL* a, int e, int v, int c, int *h){
+AVL* insererAVL(AVL* a, long e, long v, long c, int *h){
 	if(a == NULL){
 		*h = 0;
 		a=creationAVL(e, v, c);
@@ -141,7 +141,7 @@ AVL* insererAVL(AVL* a, int e, int v, int c, int *h){
 	
 	else if(e<a->identifiant){
 		a->fg = insererAVL(a->fg, e, v, c, h);
-		*h = -*h;
+		*h = -(*h);
 	}
 
 	else if(e>a->identifiant){
@@ -173,43 +173,23 @@ AVL* insererAVL(AVL* a, int e, int v, int c, int *h){
 	return a;
 }
 
-void production (AVL* a){
-	if (a == NULL){
-		return;
-	}
-	if (a->capacite < a->conso){
-		printf("La station est en sous-production d'énergie");
-	} else if (a->capacite > a->conso){
-		printf("La station est en surproduction d'énergie");
-	} else {
-		printf("La station est en équilibre");
-	}
-	
-	production(a->fg);
-	production(a->fd);
-
-}
-
 void affiche(AVL* a){
    if(a!=NULL){
      affiche(a->fg);
-     printf("%d;%d;%d\n",a->identifiant,a->capacite,a->conso);
+     printf("%ld;%ld;%ld\n",a->identifiant,a->capacite,a->conso);
      affiche(a->fd);
    }
 }     
 
 int main(){
-  int v1,v2,v3;
+  long v1,v2,v3;
   AVL* station = NULL;
   int h = 0;
 
-  while(scanf("%d;%d;%d\n",&v1,&v2,&v3) == 3){
- 	 //printf("%d %d %d\n",v1,v2,v3);
+  while(scanf("%ld;%ld;%ld\n",&v1,&v2,&v3) == 3){
  	 station=insererAVL(station,v1,v2,v3,&h);
- 	 //printf("15\n");
+ 	 //printf("%ld,%ld,%ld\n",v1,v2,v3);
   }	 
-  
-  //printf("45\n");
   
   affiche(station);
   
