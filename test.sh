@@ -24,14 +24,19 @@ if ! [ -f "help.txt" ] ; then
 	exit 3
 fi	
 
+cd $1
+
 if ! [ -f "c-wire_v00.dat" ] ; then
 	echo -e "le fichier de données n'existe pas\n"
 	exit 4
 fi
 
+cd ..
+
 nomType=$2
 nomConsommateur=$3
 numeroCentrale=$4
+difference="0"
 
 if ! [ "$2" = "hvb" ] && ! [ "$2" = "hva" ] && ! [ "$2" = "lv" ] ; then
 	echo -e "le type de centrale que vous souhaitez étudier n'existe pas\n"
@@ -63,9 +68,9 @@ if [ "$nomType" = "hvb" ] ; then
 		cat help.txt | head -17 | tail -n+15
 	else
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 2-8 | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" | ./exec > blabla.txt
+			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 2-8 | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" | ./exec > hvb_comp_$4.csv
 		else
-			cut -d ';' -f 2-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" | ./exec > blabla.txt
+			cut -d ';' -f 2-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" | ./exec > hvb_comp.csv 
 		fi
 	fi	
 fi	
@@ -78,36 +83,38 @@ if [ "$nomType" = "hva" ] ; then
 		cat help.txt | head -17 | tail -n+15
 	else
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 3-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec > blabla.txt
+			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 3-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec > hva_comp_$4.csv
 		else
-			cut -d ';' -f 3-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec > blabla.txt
-		fi	
+			cut -d ';' -f 3-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-;[0-9]+" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec > hva_comp.csv
+		fi
 	fi
 fi
 
 if [ "$nomType" = "lv" ] ; then
 	if [ "$nomConsommateur" = "all" ] ; then
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
+			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_all_$4.csv
+			awk -F';' '{print $0 ";" $2 - $3}' lv_all_$4.csv > fichier_modifie.csv
 		else
-			cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
+			cut -d ';' -f 4-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_all.csv
+			awk -F';' '{print $0 ";" $2 - $3}' lv_all.csv > fichier_modifie.csv
 		fi
 	fi
 	if [ "$nomConsommateur" = "indiv" ] ; then
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
+			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_indiv_$4.csv
 		else
-			cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
+			cut -d ';' -f 4-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_indiv.csv
 		fi	
 	fi
 	if [ "$nomConsommateur" = "comp" ] ; then
 		if ! [ -z "$4" ]; then
-			cat c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
+			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_comp_$4.csv
 		else
-			cut -d ';' -f 4-8 c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > blabla.txt
+			cut -d ';' -f 4-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_comp.csv
 		fi	
 	fi	
 fi
 
-#owk : s'informer rajouter colonne
+#awk : s'informer rajouter colonne
 #tee : doc pour combiner
