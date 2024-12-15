@@ -1,151 +1,197 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-typedef struct AVL{
-    int identifiant;
-    int conso;
-    int capacite;
-    int eq;
-    int hauteur;
-    struct AVL *fg;
-    struct AVL *fd;
-}AVL;
+typedef struct AVL {
+	long id; 
+	long conso;
+	long cap;
+	int equ;
+	struct AVL* d;
+	struct AVL* g;
+}AVL; 
 
-AVL *creationAVL(int nombre, int cap, int conso){
-    AVL *new = malloc(sizeof(AVL));
-    if (new==NULL){
-        exit(1);
-    }
-    new->identifiant = nombre;
-    new->capacite = cap;
-    new->conso = conso;
-    new->fg = NULL;
-    new->fd = NULL;
-
-    return new;
+long min(long a, long b){
+  
+   if(a > b){
+     return b;
+   }
+   return a;
 }
 
-AVL *insererAVL(AVL *a, int e, int v, int c){
-        if(a==NULL){
-            a=creationAVL(e,v,c);
-            return a;
-        }
-        if(e<a->identifiant){
-            a->fg = insererAVL(a->fg, e,v,c);
-        }
-        if(e<a->identifiant){
-            a->fg = insererAVL(a->fd, e,v,c);
-        }
-        if(e=a->identifiant){
-            a->conso += c;
-            a->capacite += v;
-        }
-    return a;
-} 
+long max(long a, long b){     
 
-int hauteur(AVL *a) {
-    if (a == NULL)
-        return 0; // Un nœud NULL a une hauteur de 0
-    return a->hauteur;
+   if(a > b){
+     return a;
+   }
+   return b;
+}
+   
+
+
+AVL* creationAVL(long nb, long cap, long conso){
+	AVL* new = malloc(sizeof(AVL));
+	if(new == NULL){
+		exit (1);
+	}
+	
+	new->id =nb;
+	new->cap = cap;
+	new->conso = conso;
+	new->equ = 0;
+	new->g = NULL;
+	new->d = NULL;
+
+	return new;
 }
 
-int facteur_eq(AVL *a) {
-    if (a == NULL)
-        return 0;
-    return hauteur(a->fg) - hauteur(a->fd);
+AVL* rotationDroite(AVL* a){
+
+	AVL* p = a->g;
+	int eqa = a->equ;
+	int eqp = p->equ;
+
+	a->g = p->d;
+	p->d = a;
+
+	a->equ = eqa - min(eqp, 0) + 1; 
+	p->equ = max(max(eqa + 2, eqa + eqp + 2), eqp + 1);
+
+	return p; 
 }
 
+AVL* rotationGauche(AVL* a){
+	if(a==NULL){
+	  printf("err2\n");
+	  exit(2);
+	}  
+	
+	AVL* p = a->d;
+	int eqa = a->equ;
+	int eqp = p->equ;
 
-void production(AVL *a, int *somme) {
-    if (a == NULL) {
-        return;
-    }
+	a->d = p->g;
+	p->g = a;
 
-    // Vérifie la production de la station actuelle
-    if (a->capacite < a->conso) {
-        printf("La station %d est en sous-production d'énergie.\n", a->identifiant);
-    } else if (a->capacite > a->conso) {
-        printf("La station %d est en surproduction d'énergie.\n", a->identifiant);
-    } else {
-        printf("La station %d est équilibrée en production et consommation.\n", a->identifiant);
-    }
+	a->equ = eqa - max(eqp, 0) - 1;
+	p->equ = min(min(eqa - 2, eqa + eqp - 2), eqp - 1);
 
-    // Ajoute la capacité à la somme totale
-    *somme += a->capacite;
-
-    // Appelle la fonction pour les sous-arbres gauche et droit
-    production(a->fg, somme);
-    production(a->fd, somme);
+	return p;
 }
 
-
-void calculEtSortie(AVL *a, int *capaciteTotale, int *consoTotale) {
-    if (a == NULL) {
-        return; // Condition d'arrêt pour la récursivité
-    }
-
-    // Parcours récursif à gauche
-    calculEtSortie(a->fg, capaciteTotale, consoTotale);
-
-    // Calculer les sommes
-    *capaciteTotale += a->capacite;
-    *consoTotale += a->conso;
-
-    // Afficher les données pour le shell (par exemple)
-    printf("Station %d : Capacite=%d, Conso=%d\n", a->identifiant, a->capacite, a->conso);
-
-    // Parcours récursif à droite
-    calculEtSortie(a->fd, capaciteTotale, consoTotale);
+AVL* doubleRotationDroite(AVL* a){
+	if(a==NULL){
+	  printf("err3\n");
+	  exit(3);
+	} 
+	a->g = rotationDroite(a->g);
+	return rotationGauche(a);
 }
 
-AVL *lireEtTraiterDonnees(AVL *station) {
-    char v1, v2, v3;
-
-    while (scanf("%c;%c;%c\n", &v1, &v2, &v3) == 3) {
-        // Traitement des caractères v2 et v3
-        if (v2 == '-') {
-            v2 = 0; // Interprétation de '-' comme 0
-        }
-        if (v3 == '-') {
-            v3 = 0; // Interprétation de '-' comme 0
-        }
-        // Vérification de la validité des données
-        if ((v2 != 0 && v2 < '0') || (v3 != 0 && v3 < '0')) {
-            printf("Problème dans les données récupérées\n\n");
-        }
-
-        // Insertion dans l'AVL
-        station = insererAVL(station, v1, v2, v3);
-    }
-
-    return station;
+AVL* doubleRotationGauche(AVL* a){
+	if(a==NULL){
+	  printf("err4\n");
+	  exit(4);
+	} 
+	
+	a->d = rotationGauche(a->d);
+	return rotationDroite(a);
 }
 
-
-int main() {
-    char v1, v2, v3;
-    int sum2 = 0;
-    int sum3 = 0;
-    int capaciteTotale = 0;
-    int consoTotale = 0;
-    AVL *station = NULL;
+AVL* equilibreAVL(AVL* a){
 
 
+	if(a==NULL){
+	  printf("err5\n");
+	  exit(5);
+	} 
 
-    // Parcours de l'arbre AVL pour calculer les sommes
-    parcoursAVL(station, &sum2, &sum3);
+	if(a->equ <= -2){
+		if(a->g->equ <= 0){
+			return rotationDroite(a);
+		}
+		else{
+			return doubleRotationDroite(a);
+		}
+	}else if(a->equ >= 2){
+		if(a->d->equ >= 0){
+			return rotationGauche(a);
+		}
+		else{
+			return doubleRotationGauche(a);
+		}
+	}
+	
 
-    // Affichage des résultats finaux
-    printf("0;%d;%d\n", sum2, sum3);
+	return a;
+}	
 
+AVL* insererAVL(AVL* a, long e, long v, long c, int *h){
+	if(a == NULL){
+		*h = 0;
+		a=creationAVL(e, v, c);
+		
+		if(a==NULL){
+	 	   printf("err6\n");
+	 	   exit(6);
+		} 
+		
+		return a;
+	}
+	
+	else if(e<a->id){
+		a->g = insererAVL(a->g, e, v, c, h);
+		*h = -(*h);
+	}
 
-    // Parcourir l'AVL, calculer les totaux et afficher pour le shell
-    printf("Début du rapport des stations :\n");
-    calculEtSortie(station, &capaciteTotale, &consoTotale);
-    lireEtTraiterDonnees(station);
-    // Affichage final des totaux
-    printf("Somme totale : Capacite=%d, Conso=%d\n", capaciteTotale, consoTotale);
+	else if(e>a->id){
+		a->d = insererAVL(a->d, e, v, c, h);
+	}
+	
+	else if(e==a->id){
+		a->conso += c;
+		a->cap +=v;
+	}
+	
+	else {
+		*h = 0; 
+		return a; 
+	}
 
-    return 0;
+	if(*h != 0){
+	
+		a->equ += *h;
+		a = equilibreAVL(a);
+
+		if(a->equ == 0){
+			*h = 0;
+		}else{
+			*h = 1;
+		}
+	}	
+
+	return a;
 }
+
+void affiche(AVL* a){
+   if(a!=NULL){
+     affiche(a->g);
+     printf("%ld;%ld;%ld\n",a->id,a->cap,a->conso);
+     affiche(a->d);
+   }
+}     
+
+int main(){
+  long a1,a2,a3;
+  AVL* stat = NULL;
+  int h = 0;
+
+      while(scanf("%ld;%ld;%ld\n",&a1,&a2,&a3) == 3){
+     	 station=insererAVL(station,a1,a2,a3,&h);
+     	 //printf("%ld,%ld,%ld\n",a1,a2,a3);
+      }	 
+      
+  affiche(stat);
+  
+  return 0;
+}  
 
