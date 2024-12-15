@@ -1,6 +1,6 @@
 1 📊 Analyse et Gestion des Données Énergétiques
 
-Ce projet a pour objectif d'analyser les données des systèmes de distribution d'énergie, afin de détecter les stations en surproduction ou sous-production d'énergie. Le projet utilise un script Bash pour le pré-traitement des données et un programme en langage C avec une structure en arbre AVL pour le traitement et l'analyse.
+Ce projet a pour objectif d'analyser les données des systèmes de distribution d'énergie, afin de détecter les stations en surproduction ou sous-production d'énergie. Le projet utilise un script shell pour le pré-traitement des données et un programme en langage C avec une structure en arbre AVL pour le traitement et l'analyse.
 
 2 🚀 Objectifs
 
