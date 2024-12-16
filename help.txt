@@ -1,14 +1,14 @@
 Fichier d'aide :
 
-Pour le bon fonctionnement du programme il faut que vous mettiez 4 arguments lors de l'éxécution :
-1 - Le chemien qui mène au fichier de données sur les centrales
+Pour le bon fonctionnement du programme, il faut que vous mettiez 4 arguments lors de l'éxécution :
+1 - Le chemin qui mène au fichier de données sur les centrales
 2 - Le type de centrale que vous souhaitez étudier : hvb/hva/lv
-3 - Quel type de consommateurs vous souhaitez étudier : all (entreprises + particuliers) / comp (entreprises) / indiv (particuliers)
-4 - l'identifiant de la centrale : 1 à 5
+3 - Le type de consommateurs vous souhaitez étudier : all (entreprises + particuliers) / comp (entreprises) / indiv (particuliers)
+4 - L'identifiant de la centrale : 1 à 5
 
-- le type de la centrale doit être : hvb ou hva ou lv
+- Le type de la centrale doit être : hvb ou hva ou lv
 
-- le type de consommateur doit être : all (tous les consommateurs) ou comp (toutes les entreprises) ou indiv (tous les logements de partivuliers)	
+- Le type de consommateur doit être : all (tous les consommateurs) ou comp (toutes les entreprises) ou indiv (tous les logements de partivuliers)	
 		
 - Le numéro de la centrale doit être compris entre 1 et 5
 
