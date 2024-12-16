@@ -36,7 +36,10 @@ Ce script effectue l'analyse et prépare les données sous forme CSV.
 
 📜 Paramètres :
 <répertoire> : Le chemin du répertoire où se trouve le fichier c-wire_v00.dat.
-<type> : Le type de centrale : hvb : Haute tension - Type B. hva : Haute tension - Type A. lv : Basse tension.
+<type> : Le type de centrale : 
+- hvb : Haute tension
+- hva : Haute tension
+- lv : Basse tension.
 <consommateur> : Le type de consommateurs : all : Tous les consommateurs.  comp : Consommateurs commerciaux.  indiv : Consommateurs individuels.
 <numéro_centrale> : Le numéro de la centrale (entre 1 et 5)
 
