@@ -35,8 +35,8 @@ AVL* creerAVL(long nb, long cap, long conso){
 	}
 	
 	new->identifiant = nb;	//identifiant de la station
-	new->capacite = cap;	//capacité de la station
-	new->consommation = conso;	//consommation 
+	new->capacite = cap;	//capacité de transfert de la station
+	new->consommation = conso;	//consommation des clients 
 	new->eq = 0;
 	new->fg = NULL;
 	new->fd = NULL;
@@ -50,17 +50,17 @@ AVL* rotationDroite(AVL* a){
 	  exit(2);
 	}  
 	
-	AVL* p = a->fg;
+	AVL* pivot = a->fg;
 	int eq_a = a->eq;
-	int eq_p = p->eq;
+	int eq_p = pivot->eq;
 
-	a->fg = p->fd;
-	p->fd = a;
+	a->fg = pivot->fd;
+	pivot->fd = a;
 
 	a->eq = eq_a - min(eq_p, 0) + 1; 
-	p->eq = max(max(eq_a + 2, eq_a + eq_p + 2), eq_p + 1);
+	pivot->eq = max(max(eq_a + 2, eq_a + eq_p + 2), eq_p + 1);
 
-	return p; 
+	return pivot; 
 }
 
 AVL* rotationGauche(AVL* a){
@@ -69,17 +69,17 @@ AVL* rotationGauche(AVL* a){
 	  exit(3);
 	}  
 	
-	AVL* p = a->fd;
+	AVL* pivot = a->fd;
 	int eq_a = a->eq;
-	int eq_p = p->eq;
+	int eq_p = pivot->eq;
 
-	a->fd = p->fg;
-	p->fg = a;
+	a->fd = pivot->fg;
+	pivot->fg = a;
 
 	a->eq = eq_a - max(eq_p, 0) - 1;
-	p->eq = min(min(eq_a - 2, eq_a + eq_p - 2), eq_p - 1);
+	pivot->eq = min(min(eq_a - 2, eq_a + eq_p - 2), eq_p - 1);
 
-	return p;
+	return pivot;
 }
 
 AVL* doubleRotationDroite(AVL* a){
