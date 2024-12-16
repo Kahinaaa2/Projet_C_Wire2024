@@ -94,10 +94,14 @@ if [ "$nomType" = "lv" ] ; then
 	if [ "$nomConsommateur" = "all" ] ; then
 		if ! [ -z "$4" ]; then
 			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_all_$4.csv
-			awk -F';' '{print $0 ";" $2 - $3}' lv_all_$4.csv > fichier_modifie.csv
+			awk -F ';' '{print $0 ";" $2 - $3}' lv_all_$4.csv | tr "," "." > fichier_modifie.csv
+			sort -t ';' -k4 -n fichier_modifie.csv | head -10 > lv_all_minmax_$4.csv
+			sort -t ';' -k4 -n fichier_modifie.csv | tail -n10 >> lv_all_minmax_$4.csv
 		else
 			cut -d ';' -f 4-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_all.csv
-			awk -F';' '{print $0 ";" $2 - $3}' lv_all.csv > fichier_modifie.csv
+			awk -F ';' '{print $0 ";" $2 - $3}' lv_all.csv | tr "," "." > fichier_modifie.csv
+			sort -t ';' -k4 -n fichier_modifie.csv | head -10 > lv_all_minmax.csv
+			sort -t ';' -k4 -n fichier_modifie.csv | tail -n10 >> lv_all_minmax.csv
 		fi
 	fi
 	if [ "$nomConsommateur" = "indiv" ] ; then
