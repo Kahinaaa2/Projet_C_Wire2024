@@ -9,6 +9,7 @@ int main(){
   }	 
   
   affiche(station);
+  libererAVL(station);
   
   return 0;
 } 
