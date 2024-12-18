@@ -98,7 +98,7 @@ AVL* doubleRotationGauche(AVL* a){
 	  exit(5);
 	} 
 	
-	a->fd = rotationGauche(a->fd); //rotation 
+	a->fd = rotationGauche(a->fd);
 	return rotationDroite(a);
 }
 //fonction pour équilibrer l'AVL
