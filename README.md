@@ -42,7 +42,10 @@ Ce script effectue l'analyse et prépare les données sous forme CSV.
   - hvb : Haute tension
   - hva : Haute tension
   - lv : Basse tension.
-- <consommateur> : Le type de consommateurs : all : Tous les consommateurs.  comp : Consommateurs commerciaux.  indiv : Consommateurs individuels.
+- <consommateur> : Le type de consommateurs :
+  - all : Tous les consommateurs.
+  - comp : Consommateurs commerciaux.
+  - indiv : Consommateurs individuels.
 - <numéro_centrale> : Le numéro de la centrale (entre 1 et 5)
 
 - Analyser avec le Programme C
