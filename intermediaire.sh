@@ -35,6 +35,20 @@ if ! [ -f "c-wire_v25.dat" ] ; then
 	exit 4
 fi
 
+if ! [ -d "graphs" ] ; then 
+	echo -e "Le dossier graphs n'existe pas\n"
+ 	mkdir "graphs"
+fi
+
+if ! [ -d "tmp" ] ; then
+	echo -e "Le dossier tmp n'existe pas\n"
+ 	mkdir "tmp"
+else 
+	echo -e "Le dossier tmp existe déjà\n"
+ 	rm -r tmp/*
+  	echo -e "Le dossier tmp a été vidé\n"
+fi
+
 cd ..
 
 nomType=$2
