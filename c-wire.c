@@ -166,7 +166,7 @@ AVL* insererAVL(AVL* a, long e, long v, long c, int *h){
 void affiche(AVL* a){
    if(a!=NULL){
      affiche(a->fg);
-     printf("%ld;%ld;%ld\n",a->identifiant,a->capacite,a->consommation);
+     printf("%ld:%ld:%ld\n",a->identifiant,a->capacite,a->consommation);
      affiche(a->fd);
    }
 }     
