@@ -37,7 +37,7 @@ Ce script effectue l'analyse et prépare les données sous forme CSV.
 ### Syntaxe : 
 ./script.sh <répertoire> <type> <consommateur> <numéro_centrale>
 ### Paramètres :
-- <répertoire> : Le chemin du répertoire où se trouve le fichier c-wire_v00.dat.
+- <répertoire> : Le chemin du répertoire où se trouve le fichier c-wire_v25.dat.
 - < type > : Le type de centrale.
   - hvb : Haute tension
   - hva : Haute tension
@@ -57,7 +57,8 @@ Exemple : Analyser les données avec la commande suivante : cat lv_all.csv | ./e
  script.sh :
 - Analyse le fichier c-wire_v00.dat.
 - Génère un fichier CSV basé sur nos paramètres d'entrée (type de centrale, numéro de la centrale, consommateur...).
-avl.c :
+
+ avl.c :
 - Trie les données en utilisant un arbre AVL pour optimiser la recherche et l'analyse des données.
 - Affiche une synthèse après traitement.
 
