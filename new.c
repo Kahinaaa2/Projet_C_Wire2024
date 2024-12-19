@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#define BUFFER_SIZE 1024
 
 // Structure de l'AVL
 typedef struct AVL {
@@ -25,7 +28,7 @@ long max(long a, long b) {
 AVL* creerAVL(long nb, long cap, long conso) {
     AVL* new = malloc(sizeof(AVL));
     if (new == NULL) {
-        printf("Allocation échouée\n");
+        fprintf(stderr, "Erreur : Allocation échouée\n");
         exit(1);
     }
     new->identifiant = nb;
@@ -94,10 +97,10 @@ AVL* equilibreAVL(AVL* a) {
 // Fonction d'insertion dans un AVL
 AVL* insererAVL(AVL* a, long e, long v, long c, int* h) {
     if (a == NULL) {
-        *h = 0;
+        *h = 1;
         return creerAVL(e, v, c);
     }
-    
+
     if (e < a->identifiant) {
         a->fg = insererAVL(a->fg, e, v, c, h);
         *h = -(*h);
@@ -106,6 +109,7 @@ AVL* insererAVL(AVL* a, long e, long v, long c, int* h) {
     } else { // Mise à jour si l'identifiant existe déjà
         a->consommation += c;
         a->capacite += v;
+        *h = 0;
     }
 
     if (*h != 0) {
@@ -135,20 +139,33 @@ void libererAVL(AVL* a) {
     }
 }
 
-int main() {
-    long v1, v2, v3;
-    AVL* station = NULL;
+// Lecture des données en bloc pour optimisation
+void lire_donnees_en_bloc(AVL** station) {
+    char buffer[BUFFER_SIZE];
     int h = 0;
+    long v1, v2, v3;
 
-    while (scanf("%ld;%ld;%ld\n", &v1, &v2, &v3) == 3) {
-        if (v1 < 0 || v2 < 0 || v3 < 0) {
-            printf("Données incorrectes\n");
-            exit(7);
+    while (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {
+        if (sscanf(buffer, "%ld;%ld;%ld", &v1, &v2, &v3) == 3) {
+            if (v1 < 0 || v2 < 0 || v3 < 0) {
+                fprintf(stderr, "Erreur : Données incorrectes\n");
+                exit(7);
+            }
+            *station = insererAVL(*station, v1, v2, v3, &h);
         }
-        station = insererAVL(station, v1, v2, v3, &h);
     }
+}
 
+int main() {
+    AVL* station = NULL;
+
+    // Lecture et insertion des données
+    lire_donnees_en_bloc(&station);
+
+    // Affichage des résultats
     affiche(station);
+
+    // Libération de la mémoire
     libererAVL(station);
 
     return 0;
