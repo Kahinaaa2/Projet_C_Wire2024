@@ -1,5 +1,6 @@
 #!/bin/bash
 
+date1=$(date +%s)
 for i in `seq 1 $#`
 do 
 	if [ ${!i} = "-h" ] ; then
@@ -14,38 +15,22 @@ if [ "$#" -ne 4 ] && [ "$#" -ne 3 ] && [ "$#" -ne 5 ] ; then
 	exit 1
 fi
 
-if ! [ -d "$1" ] ; then
-	echo -e "'$1' n'est pas un dossier\n"
+if ! [ -f "$1" ] ; then
+	echo -e "Le fichier que vous nous avez indiquer n'existe pas'$1'\n"
+	cat help.txt | head -8
 	exit 2
 fi
 
 if ! [ -f "help.txt" ] ; then
 	echo -e "le fichier d'aide n'existe pas\n"
 	exit 3
-fi	
-
-cd $1
-
-if ! [ -f "c-wire_v00.dat" ] ; then
-	echo -e "le fichier de données n'existe pas\n"
-	exit 4
-fi
-
-if ! [ -d "graphs" ] ; then 
-	echo -e "Le dossier graphs n'existe pas\n"
- 	mkdir "graphs"
 fi
 
 if ! [ -d "tmp" ] ; then
-	echo -e "Le dossier tmp n'existe pas\n"
  	mkdir "tmp"
 else 
-	echo -e "Le dossier tmp existe déjà\n"
  	rm -r tmp/*
-  	echo -e "Le dossier tmp a été vidé\n"
 fi
-
-cd ..
 
 nomType=$2
 nomConsommateur=$3
@@ -73,8 +58,12 @@ if ! [ -z "$4" ]; then
 		cat help.txt | head -14 | tail -n+13
 		exit 7
 	fi
-fi				
+fi	
 
+date2=$(date +%s)
+echo "le temps des vérifications est de :"
+echo $((date2 - date1))
+			
 if [ "$nomType" = "hvb" ] ; then
 	if [ "$nomConsommateur" = "all" ] || [ "$nomConsommateur" = "indiv" ] ; then
 		echo -e "Les HV-B ne sont pas reliés à des consommateurs individuels, veuillez changer de paramètre\n"
@@ -82,11 +71,18 @@ if [ "$nomType" = "hvb" ] ; then
 		cat help.txt | head -17 | tail -n+15
 	else
 		if ! [ -z "$4" ]; then
-			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 2-8 | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" | ./exec > hvb_comp_$4.csv
+			grep -E "^[$4]" $1 | cut -d ';' -f 2-8 | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > tmp.csv && mv tmp.csv hvb_comp_$4.csv
+
+			echo "Station $2 :Capacité :Consommateurs (entreprises)" | cat - hvb_comp_$4.csv > tmp.csv && mv tmp.csv hvb_comp_$4.csv
 		else
-			cut -d ';' -f 2-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" | ./exec > hvb_comp.csv 
+			cut -d ';' -f 2-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;-;[0-9]+;-|^[0-9]+;-;-;-;-" | cut -d ';' -f 1,6,7 | tr "-" "0" |  ./exec > hvb_comp.csv
+			sort -t ':' -k2,2n hvb_comp.csv  > tmp.csv && mv tmp.csv hvb_comp.csv
+			echo "Station $2 :Capacite :Consommateurs (entreprises)" | cat - hvb_comp.csv > tmp.csv && mv tmp.csv hvb_comp.csv
 		fi
-	fi	
+	fi
+	date3=$(date +%s)
+	echo "le temps d'éxécution pour les hvb est :"
+	echo $((date3 - date2))	
 fi	
 
 
@@ -97,42 +93,53 @@ if [ "$nomType" = "hva" ] ; then
 		cat help.txt | head -17 | tail -n+15
 	else
 		if ! [ -z "$4" ]; then
-			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 3-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec > hva_comp_$4.csv
+			grep -E "^[$4]" $1 | cut -d ';' -f 3-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > hva_comp_$4.csv
+			echo "Station $2 :Capacite :Consommateurs (entreprises)" | cat - hva_comp_$4.csv > tmp.csv && mv tmp.csv hva_comp_$4.csv
 		else
-			cut -d ';' -f 3-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-;[0-9]+" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec > hva_comp.csv
+			cut -d ';' -f 3-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+;-|^[0-9]+;-;-;-;[0-9]+" | cut -d ';' -f 1,5,6 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > hva_comp.csv
+			echo "Station $2 :Capacite :Consommateurs (entreprises)" | cat - hva_comp.csv > tmp.csv && mv tmp.csv hva_comp.csv
 		fi
 	fi
+	date4=$(date +%s)
+	echo "le temps d'éxécution pour les hva est :"
+	echo $((date4 - date2))	
 fi
 
 if [ "$nomType" = "lv" ] ; then
 	if [ "$nomConsommateur" = "all" ] ; then
 		if ! [ -z "$4" ]; then
-			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_all_$4.csv
-			awk -F ';' '{print $0 ";" $2 - $3}' lv_all_$4.csv | tr "," "." > fichier_modifie.csv
-			sort -t ';' -k4 -n fichier_modifie.csv | head -10 | cut -d ';' -f 1,2,3 > lv_all_minmax_$4.csv
-			sort -t ';' -k4 -n fichier_modifie.csv | tail -n10 | cut -d ';' -f 1,2,3 >> lv_all_minmax_$4.csv
+			grep -E "^[$4]" $1 | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | awk -F ':' '{print $0 ":" $2 - $3}' | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > intermediaire.csv
+			cut -d ':' -f 1,2,3 intermediaire.csv > lv_all_minmax_$4.csv
+			echo "Station $2 :Capacite :Consommateurs (tous)" | cat - lv_all_minmax_$4.csv > tmp.csv && mv tmp.csv lv_all_minmax_$4.csv
 		else
-			cut -d ';' -f 4-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_all.csv
-			awk -F ';' '{print $0 ";" $2 - $3}' lv_all.csv | tr "," "." > fichier_modifie.csv
-			sort -t ';' -k4 -n fichier_modifie.csv | head -10 | cut -d ';' -f 1,2,3 > lv_all_minmax.csv
-			sort -t ';' -k4 -n fichier_modifie.csv | tail -n10 | cut -d ';' -f 1,2,3 >> lv_all_minmax_.csv
+			cut -d ';' -f 4-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | awk -F ':' '{print $0 ":" $2 - $3}' | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > intermediaire.csv
+			cut -d ':' -f 1,2,3 intermediaire.csv > lv_all_minmax.csv
+			echo "Station $2 :Capacite :Consommateurs (tous)" | cat - lv_all_minmax.csv > tmp.csv && mv tmp.csv lv_all_minmax.csv
 		fi
 	fi
 	if [ "$nomConsommateur" = "indiv" ] ; then
 		if ! [ -z "$4" ]; then
-			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_indiv_$4.csv
+			grep -E "^[$4]" $1 | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > lv_indiv_$4.csv
+			echo "Station $2 :Capacite :Consommateurs (particuliers)" | cat - lv_indiv_$4.csv > tmp.csv && mv tmp.csv lv_indiv_$4.csv
 		else
-			cut -d ';' -f 4-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_indiv.csv
+			cut -d ';' -f 4-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > lv_indiv.csv
+			echo "Station $2 :Capacite :Consommateurs (particuliers)" | cat - lv_indiv.csv > tmp.csv && mv tmp.csv lv_indiv.csv
 		fi	
 	fi
 	if [ "$nomConsommateur" = "comp" ] ; then
 		if ! [ -z "$4" ]; then
-			cat $1/c-wire_v00.dat | grep -E "^[$4]" | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_comp_$4.csv
+			grep -E "^[$4]" $1 | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > lv_comp_$4.csv
+			echo "Station $2 :Capacite :Consommateurs (entreprises)" | cat - lv_comp_$4.csv > tmp.csv && mv tmp.csv lv_comp_$4.csv
 		else
-			cut -d ';' -f 4-8 $1/c-wire_v00.dat | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec > lv_comp.csv
+			cut -d ';' -f 4-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > lv_comp.csv
+			echo "Station $2 :Capacite :Consommateurs (entreprises)" | cat - lv_comp.csv > tmp.csv && mv tmp.csv lv_comp.csv
 		fi	
-	fi	
+	fi
+	date5=$(date +%s)
+	echo "le temps d'éxécution pour les lv est :"
+	echo $((date5 - date2))		
 fi
 
-#awk : s'informer rajouter colonne
-#tee : doc pour combiner
+date6=$(date +%s)
+echo "Le programme a mis (en secondes) : "
+echo $((date6 - date1))
