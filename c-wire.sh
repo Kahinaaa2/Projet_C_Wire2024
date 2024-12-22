@@ -42,21 +42,25 @@ fi
 
 cd .. #Sortie du dossier codeC
 
-mv codeC/exec . #Deplacement de l'exécutable dans le dossier qui précède codeC, le dossier où se trouve le code shell, fichier d'aide...			
+mv codeC/exec . #Déplacement de l'exécutable dans le dossier qui précède codeC, le dossier où se trouve le code shell, fichier d'aide...			
 
 if ! [ -f "aide.txt" ] ; then #Vérification de l'exsitence du fichier d'aide
 	echo -e "le fichier d'aide n'existe pas\n"
 	exit 6
 fi
 
-if ! [ -d "graphs" ] ; then #Si le dossier graphs n'existe pas, le programme va venir le créer
+if ! [ -d "graphs" ] ; then #Si le dossier "graphs" n'existe pas, le programme va venir le créer
  	mkdir "graphs"
+else 
+	if [ "$(ls -A graphs)" ]; then #Si le dossier "graphs" existe, le programme va venir le vider si il contient des choses
+	rm -r graphs/* #Efface les fichiers que si on a les droits sur ses fichiers, sinon le programme va demander une validation auprès de l'utilisateur
+	fi
 fi
 
-if ! [ -d "tmp" ] ; then #Si le dossier tmp n'existe pas, le programme va venir le créer
+if ! [ -d "tmp" ] ; then #Si le dossier "tmp" n'existe pas, le programme va venir le créer
  	mkdir "tmp"
 else 
-	if [ "$(ls -A tmp)" ]; then #Si le fichier existe, le programme va venir le vider si il contient des choses
+	if [ "$(ls -A tmp)" ]; then #Si le dossier "tmp" existe, le programme va venir le vider si il contient des choses
 	rm -r tmp/* #Efface les fichiers que si on a les droits sur ses fichiers, sinon le programme va demander une validation auprès de l'utilisateur
 	fi
 fi
@@ -141,7 +145,8 @@ if [ "$nomType" = "lv" ] ; then #Etudier le cas où c'est LV
 	if [ "$nomConsommateur" = "all" ] ; then #Cas où c'est avec tous les consommateurs
 		if ! [ -z "$4" ]; then #Cas avec un numéro de Centrale donné
 			#Même tri que pour les HVB au départ mais après l'exécution du C le programme ajoute une quatrième colonne avec la différence entre capacité et consommation | tri selon le
-			grep -E "^[$4]" $1 | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | awk -F ':' '{print $0 ":" $2 - $3}' | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > tmp/intermediaire.csv
+			grep -E "^[$4]" $1 | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > lv_all_$4.csv
+			awk -F ':' '{print $0 ":" $2 - $3}' lv_all_$4.csv | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > tmp/intermediaire.csv
 			cut -d ':' -f 1-3 tmp/intermediaire.csv > lv_all_minmax_$4.csv #on ne garde que les trois premières colonnes dans le fichier final
 			echo "Station $2 :Capacite :Consommateurs (tous)" | cat - lv_all_minmax_$4.csv > tmp.csv && mv tmp.csv lv_all_minmax_$4.csv #Rajout d'une légende au début du fichier
    			#fichier gnuplot pour le graphique
@@ -164,8 +169,9 @@ if [ "$nomType" = "lv" ] ; then #Etudier le cas où c'est LV
 			rm gnuplot_script #supprime le fichier après son utilisation
 			
 
-		else
-			cut -d ';' -f 4-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | awk -F ':' '{print $0 ":" $2 - $3}' | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > tmp/intermediaire.csv
+		else #même tri que précedemment mais cette fois ci sans le tri en fonction d'une centrale
+			cut -d ';' -f 4-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > lv_all.csv
+			awk -F ':' '{print $0 ":" $2 - $3}' lv_all.csv | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > tmp/intermediaire.csv
 			cut -d ':' -f 1-3 tmp/intermediaire.csv > lv_all_minmax.csv
 			echo "Station $2 :Capacite :Consommateurs (tous)" | cat - lv_all_minmax.csv > tmp.csv && mv tmp.csv lv_all_minmax.csv
 			#fichier gnuplot pour le graphique
@@ -188,11 +194,11 @@ if [ "$nomType" = "lv" ] ; then #Etudier le cas où c'est LV
 			rm gnuplot_script #supprime le fichier après son utilisation
 		fi
 	fi
-	if [ "$nomConsommateur" = "indiv" ] ; then
-		if ! [ -z "$4" ]; then
+	if [ "$nomConsommateur" = "indiv" ] ; then #Cas où l'utilisateur a choisi les LV
+		if ! [ -z "$4" ]; then #Même tri que pour les hvb et hva mais en se concentrant sur les LV, la première colonne étudiée change
 			grep -E "^[$4]" $1 | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > lv_indiv_$4.csv
 			echo "Station $2 :Capacite :Consommateurs (particuliers)" | cat - lv_indiv_$4.csv > tmp.csv && mv tmp.csv lv_indiv_$4.csv
-		else
+		else #Même tri mais sans le tri en fonction d'une centrale
 			cut -d ';' -f 4-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | sort -t ':' -k2,2n > lv_indiv.csv
 			echo "Station $2 :Capacite :Consommateurs (particuliers)" | cat - lv_indiv.csv > tmp.csv && mv tmp.csv lv_indiv.csv
 		fi	
@@ -211,8 +217,8 @@ if [ "$nomType" = "lv" ] ; then #Etudier le cas où c'est LV
 	echo $((date5 - date2))		
 fi
 
-if [ -f "exec" ] ; then
-	mv exec codeC/
+if [ -f "exec" ] ; then 
+	mv exec codeC/ #si l'exécutable exec existe alors le redeplacer dans le dossier codeC pour tout regrouper dans un seul dossier
 fi	
 
 date6=$(date +%s)
