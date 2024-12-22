@@ -76,7 +76,7 @@ Dans le programme C :
 
 
 
-## 9 Auteurs
+##  Auteurs
 - Melanie Avel,
 - Kahina Hammad,
 - Ashana Maheswaran.
