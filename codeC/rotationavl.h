@@ -2,7 +2,6 @@
 #define ROTATIONAVL_H
 
 #include "main.h"
-#include "insertionavl.h"
 #include "fonction.h"
 
 AVL* rotationDroite(AVL* a);
