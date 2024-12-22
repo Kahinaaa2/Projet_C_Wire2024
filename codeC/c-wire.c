@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#define BUFFER_SIZE 1024
 
 // Structure de l'AVL
 typedef struct AVL {
@@ -28,7 +25,7 @@ long max(long a, long b) {
 AVL* creerAVL(long nb, long cap, long conso) {
     AVL* nouveau = malloc(sizeof(AVL));
     if (nouveau == NULL) {
-        fprintf(stderr, "Erreur : Allocation échouée\n");
+        printf("Erreur d'allocation\n");
         exit(1);
     }
     nouveau->identifiant = nb;
@@ -41,7 +38,7 @@ AVL* creerAVL(long nb, long cap, long conso) {
 }
 
 // Rotation droite
-AVL* rotationDroite(AVL* a) {
+AVL* rotationDroite(AVL* a) { //a est forcément différent de NUL (vérifier dans la focntion insererAVL)
     AVL* pivot = a->fg;
     a->fg = pivot->fd;
     pivot->fd = a;
@@ -53,7 +50,7 @@ AVL* rotationDroite(AVL* a) {
 }
 
 // Rotation gauche
-AVL* rotationGauche(AVL* a) {
+AVL* rotationGauche(AVL* a) { //a est forcément différent de NUL (vérifier dans la focntion insererAVL)
     AVL* pivot = a->fd;
     a->fd = pivot->fg;
     pivot->fg = a;
@@ -65,19 +62,19 @@ AVL* rotationGauche(AVL* a) {
 }
 
 // Double rotation droite
-AVL* doubleRotationDroite(AVL* a) {
+AVL* doubleRotationDroite(AVL* a) { //a est forcément différent de NUL (vérifier dans la focntion insererAVL)
     a->fg = rotationDroite(a->fg);
     return rotationGauche(a);
 }
 
 // Double rotation gauche
-AVL* doubleRotationGauche(AVL* a) {
+AVL* doubleRotationGauche(AVL* a) { //a est forcément différent de NUL (vérifier dans la focntion insererAVL)
     a->fd = rotationGauche(a->fd);
     return rotationDroite(a);
 }
 
 // Fonction pour équilibrer l'AVL
-AVL* equilibreAVL(AVL* a) {
+AVL* equilibreAVL(AVL* a) { //a est forcément différent de NUL (vérifier dans la focntion insererAVL)
     if (a->eq <= -2) { // Sous-arbre gauche déséquilibré
         if (a->fg->eq <= 0) {
             return rotationDroite(a);
@@ -140,15 +137,15 @@ void libererAVL(AVL* a) {
 }
 
 // Lecture des données en bloc pour optimisation
-void lire_donnees_en_bloc(AVL** station) {
-    char buffer[BUFFER_SIZE];
+void lireDonnees(AVL** station) {
+    char recup[1024];
     int h = 0;
     long v1, v2, v3;
 
-    while (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {
-        if (sscanf(buffer, "%ld;%ld;%ld", &v1, &v2, &v3) == 3) {
+    while (fgets(recup, 1024, stdin) != NULL) {
+        if (sscanf(recup, "%ld;%ld;%ld", &v1, &v2, &v3) == 3) {
             if (v1 < 0 || v2 < 0 || v3 < 0) {
-                fprintf(stderr, "Erreur : Données incorrectes\n");
+                printf("Les données du fichiers sont incorrectes et ne correspondent pas\n");
                 exit(7);
             }
             *station = insererAVL(*station, v1, v2, v3, &h);
@@ -160,7 +157,7 @@ int main() {
     AVL* station = NULL;
 
     // Lecture et insertion des données
-    lire_donnees_en_bloc(&station);
+    lireDonnees(&station);
 
     // Affichage des résultats
     affiche(station);
