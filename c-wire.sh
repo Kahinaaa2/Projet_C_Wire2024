@@ -162,7 +162,7 @@ if [ "$nomType" = "lv" ] ; then #Etudier le cas où c'est LV
 			echo "set datafile separator ':'" >> gnuplot_script #indique le séparateur de colonnes du fichier csv
 			echo "plot 'tmp/intermediaire.csv' using 4:xtic(1) with boxes lc rgb 'green' title 'Surproduction', 'tmp/intermediaire.csv' using 4:xtic(1) with boxes lc rgb 'red' title 'Sous-production'" >> gnuplot_script #trace le graphiques avec les données de la première et quatrième colonnes du fichier csv, légende des couleurs
 			gnuplot gnuplot_script #éxécute le script
-			rm gnuplot_script #supprime le fichier après son utilisation
+			mv gnuplot_script tmp/ #déplace le fichier vers le dossier tmp, c'est un fichier temporaire
 			
 
 		else #même tri que précedemment mais cette fois ci sans le tri en fonction d'une centrale
@@ -187,7 +187,7 @@ if [ "$nomType" = "lv" ] ; then #Etudier le cas où c'est LV
 			echo "set datafile separator ':'" >> gnuplot_script #indique le séparateur de colonnes du fichier csv
 			echo "plot 'tmp/intermediaire.csv' using 4:xtic(1) with boxes lc rgb 'green' title 'Surproduction', 'tmp/intermediaire.csv' using 4:xtic(1) with boxes lc rgb 'red' title 'Sous-production'" >> gnuplot_script #trace le graphiques avec les données de la première et quatrième colonnes du fichier csv, légende des couleurs
 			gnuplot gnuplot_script #éxécute le script
-			rm gnuplot_script #supprime le fichier après son utilisation
+			mv gnuplot_script tmp/ #déplace le fichier vers le dossier tmp, c'est un fichier temporaire
 		fi
 	fi
 	if [ "$nomConsommateur" = "indiv" ] ; then #Cas où l'utilisateur a choisi les LV
