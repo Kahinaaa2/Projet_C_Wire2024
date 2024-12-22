@@ -10,7 +10,7 @@ typedef struct AVL{
     long identifiant;
     long consommation;
     long capacite;
-    int eq;
+    int eq; //facteur d'équilibre
     struct AVL* fg;
     struct AVL* fd;
 }AVL;
