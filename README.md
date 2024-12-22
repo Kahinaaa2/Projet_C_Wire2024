@@ -4,26 +4,21 @@ Ce projet a pour objectif d'analyser les données des systèmes de distribution 
 
 ##  Objectifs
 - Analyser les données énergétiques 
-- Détecter les surproductions et sous-productions dans les stations 
+- Détecter les surproductions et sous-productions dans les stations LV
 - Utiliser un arbre AVL pour analyser les données.
 
 ##  Contenu du Projet
 Les composants principaux du projet sont :
-- script.sh : Script shell pour le pré-traitement et l'analyse initiale des données énergétiques.
-- avl.c : Programme C pour le traitement des données avec une structure en arbre AVL.
+- c-wire.sh : Script shell pour le pré-traitement et l'analyse initiale des données énergétiques.
+- Le programme C pour le traitement des données avec une structure en arbre AVL.
 - help.txt : Guide et documentation d'utilisation pour le script shell en cas de non respect du nombre d'arguments d'entrée.
-- c-wire_v00.dat : Fichier de données énergétiques contenant les données chiffrées des stations.
+-  Le fichier de données énergétiques contenant les données chiffrées des stations.
   
 ##  Prérequis
 Avant de commencer, vous devez avoir :
 - Un environnement Linux/Unix.
 - Le compilateur GCC pour compiler le programme en langage C.
-- Les fichiers requis dans le répertoire du projet :
-    - script.sh
-    - avl.c
-    - help.txt 
-    - c-wire_v25.dat
-
+- Les fichiers requis dans le répertoire du projet
 
 ##  Installation
 
