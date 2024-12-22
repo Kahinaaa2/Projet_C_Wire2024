@@ -10,12 +10,14 @@ typedef struct AVL{
     long identifiant;
     long consommation;
     long capacite;
-    int eq; //facteur d'équilibre
+    int eq;
     struct AVL* fg;
     struct AVL* fd;
 }AVL;
 
 #include "insertionavl.h"
-#include "rotationavl.h"
 #include "fonction.h"
+
+void lire_donnees_en_bloc(AVL** station);
+
 #endif
