@@ -19,10 +19,10 @@ Avant de commencer, vous devez avoir :
 - Un environnement Linux/Unix.
 - Le compilateur GCC pour compiler le programme en langage C.
 - Les fichiers requis dans le répertoire du projet :
-  -script.sh 
-  -avl.c
-  -help.txt 
-  -c-wire_v00.dat
+    - script.sh
+    - avl.c
+    - help.txt 
+    - c-wire_v00.dat
 
 
 ##  Installation
