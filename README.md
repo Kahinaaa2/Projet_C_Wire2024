@@ -1,24 +1,22 @@
 
 
 # Présentation du Sujet : 
-
-Nous devions faire un programme qui est capable de trier un fichier de données pour ensuite faire des opérations dessus et de stocker les nouvelles données dans de nouveaux fichiers.
-
-Le sujet est sur les centrales électriques de France. Des stations sont reliées à ces centrales, nous avons trois types de station, les HV-B, les HV-A et les LV. Et des consommateurs sont reliés à ces stations, pour les HV-B et HV-A ce sont des entreprises et pour le LV cela peut être des entreprises mais aussi des logements de particuliers. 
+Le programme est capable de trier un fichier de données pour ensuite faire des opérations dessus et de stocker les nouvelles données dans de nouveaux fichiers.
+Le sujet est sur les centrales électriques de France. Des stations sont reliées à ces centrales, nous avons trois types de station, les HV-B, les HV-A et les LV. Des consommateurs sont reliés à ces stations, pour les HV-B et HV-A ce sont des entreprises et pour le LV, cela peut être des entreprises mais aussi des logements de particuliers. 
 
 Le sujet nous donne un fichier de données à partir duquel on doit trier. Et ce tri doit se faire à l’aide d’un programme shell et un programme C.
 
 # Présentation du Projet : 
 	
-Notre projet a pour but de créer un fichier qui contient toutes les données sur les HV-B, les HV-A ou les LV qui sont reliés à des centrales. Le fichier créé contient l’identifiant, la capacité et la consommation de toutes les stations en fonction d’un type de consommateurs. 
+Le projet a pour but de créer un fichier qui contient toutes les données sur les HV-B, les HV-A ou les LV qui sont reliés à des centrales. Le fichier créé contient l’identifiant, la capacité et la consommation de toutes les stations en fonction d’un type de consommateurs. 
 
-Pour créer ce fichier, le programme utilise un fichier existant qui contient toutes les données générales. Notre projet est divisé en deux parties, la partie shell qui va venir trier le fichier de données existant, puis le programme C va venir créer un AVL pour stocker les données de toutes les stations étudiées. Avec l’AVL, le programme peut faire une somme de toutes les consommations d’une station pour avoir une donnée qui regroupe tous les consommateurs.
+Pour créer ce fichier, le programme utilise un fichier existant qui contient toutes les données générales. Le projet est divisé en deux parties, la partie shell qui va venir trier le fichier de données existant, puis le programme C va venir créer un AVL pour stocker les données de toutes les stations étudiées. Avec l’AVL, le programme peut faire une somme de toutes les consommations d’une station pour avoir une donnée qui regroupe tous les consommateurs.
 
 # Objectif : 
 
-Notre projet a pour objectif de calculer toutes les consommations de chaque station pour pouvoir identifier si elles sont en surproduction ou en sous-production. 
+L’objectif de notre projet est de réaliser un programme permettant la synthèse de données d’un système de distribution d’électricité.
 
-Pour les LV, notre projet vise aussi à créer un fichier qui contient les dix LV les plus en surproduction et les dix qui sont le plus en sous production.
+Pour les LV, les programmes créent un fichier qui contient les dix LV les plus en surproduction et les dix qui sont le plus en sous production, ainsi qu'un graphique en barres.
 
 # Contenu du Projet : 
 
@@ -44,10 +42,10 @@ rapport.txt : le rapport qui détaille toutes les étapes de notre Projet et les
 
 # Utilisation du Projet : 
 
-Dans un terminal, vous devez exécuter le programme c-wire.sh, si vous n’avez pas les droits il suffit d’utiliser la commande : chmod +x c-wire.sh
+Dans un terminal, vous devez exécuter le programme c-wire.sh, si vous n’avez pas les droits, ajoutez la commande : chmod +x c-wire.sh
 Lorsque vous exécutez le programme il faut rajouter des paramètres avec, il faut que vous indiquiez le chemin qui conduit au fichier de données que vous souhaitez traiter, puis le type de station que vous voulez étudier et le type de consommateurs. 
+Si vous souhaitez, vous pouvez préciser sur quelle centrale vous voulez vous concentrer. Vous pouvez également afficher le fichier d’aide en ajoutant l'argument -h.
 
-Si vous souhaitez vous pouvez préciser sur quelle centrale vous voulez vous concentrer. Et si vous souhaitez afficher le fichier d’aide il suffit de mettre un argument -h.
 exemple : ./c-wire.sh dossier/fichier.csv hvb comp 1 -> va faire un fichier qui contient tous les identifiants des hvb reliés à la centrale numéro une, et qui contient toute leur consommation d’entreprise et leur capacité. 
 
 argument 1 : chemin du fichier de données.
@@ -68,13 +66,13 @@ A la fin du programme un fichier va se créer, exemple : hvb_comp.csv.
 
 Le programme en shell va venir vérifier les arguments et afficher des messages d’erreurs et le fichier d’aide en cas d’erreur lors de la saisie des arguments. Le shell va venir compiler le programme C et créer un exécutable du nom de exec.
 
-Ensuite il va venir trier le fichier que l’utilisateur souhaite étudié pour envoyer dans le programme C que les données utiles. Après le traitement dans le C il va faire un nouveau tri pour que les fichiers soient triés dans l’ordre croissant au niveau de la capacité des stations. Dans le cas des LV all, le shell va faire un tri supplémentaire. 
+Il trie le fichier que l’utilisateur souhaite étudier pour envoyer dans le programme C que les données utiles. Après le traitement dans le C, il va faire un nouveau tri pour que les fichiers soient triés dans l’ordre croissant au niveau de la capacité des stations. Dans le cas des LV all, le shell va faire un tri au niveau de la quantité d'énergie consommée. 
 
 Le shell va créer des nouveaux fichiers qui contiennent l’identifiant, la capacité et le consommation de chaque station. Le shell va aussi calculer le temps d’exécution du programme. 
 
 # Partie C : 
 
-A partir des données qu’il reçoit, le programme C va venir vérifier le type de données reçu et va créer un arbre AVL avec ses données, il reçoit plusieurs lignes qui correspondent à une même station alors le programme va venir faire la somme de sa consommation. Avec l’AVL le programme C peut faire des recherches plus facilement avec une complexité plus simple.
+A partir des données qu’il reçoit, le programme C va venir vérifier le type de données reçu et va créer un arbre AVL avec ces données. Lorsqu'il reçoit plusieurs lignes qui correspondent à une même station, le programme va venir faire la somme de sa consommation. Avec l’AVL, le programme C peut faire des recherches plus facilement avec une complexité plus simple.
 
 Et le programme C va renvoyer chaque station avec sa capacité et sa consommation totale.
 
