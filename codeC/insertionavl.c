@@ -4,7 +4,7 @@
 AVL* creerAVL(long nb, long cap, long conso) {
     AVL* nouveau = malloc(sizeof(AVL));
     if (nouveau == NULL) {
-        fprintf(stderr, "Erreur : Allocation échouée\n");
+        printf("erreur d'allocation\n");
         exit(1);
     }
     nouveau->identifiant = nb;
