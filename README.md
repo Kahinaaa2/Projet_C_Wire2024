@@ -22,15 +22,24 @@ Pour les LV, notre projet vise aussi à créer un fichier qui contient les dix L
 
 # Contenu du Projet : 
 
-c-wire.sh :  Le programme shell qui va venir trier et créer de nouve	aux fichiers
+c-wire.sh :  Le programme shell qui va venir trier et créer de nouveaux fichiers
+
 codeC : Le dossier qui contient toutes les éléments reliés au programme C
+
 tmp : Le dossier qui va contenir tous les fichiers qui ont été créés pour des étapes intermédiaires
+
 test : Le dossier qui contient tous les fichiers qu’on a obtenu en utilisant le fichier c-wire_v25.dat
+
 Graphs : Le dossier qui va contenir le graphe que le programme va créer pour les LV all (entreprises + particulier)
+
 Makefile : Contenu dans codeC et va venir compiler le programme C qui a été divisé en plusieurs partie
+
 main.h, main.c, insertionavl.h, insertionavl.c, rotationavl.h, rotationavl.c, fonction.h, fonction.c : Contenus dans codeC et ce sont tous les fichiers dont a besoin le Makefile pour s’exécuter
+
 c-wire.c : Le programme C en entier
+
 aide.txt : fichier d’aide qui explique comment utiliser notre Projet
+
 rapport.txt : le rapport qui détaille toutes les étapes de notre Projet et les difficultés qu’on a pu rencontrer.
 
 # Utilisation du Projet : 
