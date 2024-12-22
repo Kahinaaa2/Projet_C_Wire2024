@@ -51,10 +51,6 @@ fi
 
 if ! [ -d "graphs" ] ; then #Si le dossier "graphs" n'existe pas, le programme va venir le créer
  	mkdir "graphs"
-else 
-	if [ "$(ls -A graphs)" ]; then #Si le dossier "graphs" existe, le programme va venir le vider si il contient des choses
-	rm -r graphs/* #Efface les fichiers que si on a les droits sur ses fichiers, sinon le programme va demander une validation auprès de l'utilisateur
-	fi
 fi
 
 if ! [ -d "tmp" ] ; then #Si le dossier "tmp" n'existe pas, le programme va venir le créer
