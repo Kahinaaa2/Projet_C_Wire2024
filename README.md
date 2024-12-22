@@ -22,7 +22,7 @@ Avant de commencer, vous devez avoir :
     - script.sh
     - avl.c
     - help.txt 
-    - c-wire_v00.dat
+    - c-wire_v25.dat
 
 
 ##  Installation
