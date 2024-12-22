@@ -49,6 +49,10 @@ if ! [ -f "aide.txt" ] ; then #Vérification de l'exsitence du fichier d'aide
 	exit 6
 fi
 
+if ! [ -d "graphs" ] ; then #Si le dossier graphs n'existe pas, le programme va venir le créer
+ 	mkdir "graphs"
+fi
+
 if ! [ -d "tmp" ] ; then #Si le dossier tmp n'existe pas, le programme va venir le créer
  	mkdir "tmp"
 else 
@@ -137,13 +141,51 @@ if [ "$nomType" = "lv" ] ; then #Etudier le cas où c'est LV
 	if [ "$nomConsommateur" = "all" ] ; then #Cas où c'est avec tous les consommateurs
 		if ! [ -z "$4" ]; then #Cas avec un numéro de Centrale donné
 			#Même tri que pour les HVB au départ mais après l'exécution du C le programme ajoute une quatrième colonne avec la différence entre capacité et consommation | tri selon le
-			grep -E "^[$4]" $1 | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | awk -F ':' '{print $0 ":" $2 - $3}' | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > intermediaire.csv
-			cut -d ':' -f 1,2,3 intermediaire.csv > lv_all_minmax_$4.csv
-			echo "Station $2 :Capacite :Consommateurs (tous)" | cat - lv_all_minmax_$4.csv > tmp.csv && mv tmp.csv lv_all_minmax_$4.csv
+			grep -E "^[$4]" $1 | cut -d ';' -f 4-8 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | awk -F ':' '{print $0 ":" $2 - $3}' | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > tmp/intermediaire.csv
+			cut -d ':' -f 1-3 tmp/intermediaire.csv > lv_all_minmax_$4.csv #on ne garde que les trois premières colonnes dans le fichier final
+			echo "Station $2 :Capacite :Consommateurs (tous)" | cat - lv_all_minmax_$4.csv > tmp.csv && mv tmp.csv lv_all_minmax_$4.csv #Rajout d'une légende au début du fichier
+   			#fichier gnuplot pour le graphique
+			echo "set terminal png" > gnuplot_script #fichier PNG comme sortie
+			echo "set output 'graphs/postesLV_$4_graph.png'" >> gnuplot_script #fichier sauvegardé dans le dossier graphs
+			echo "set style data histogram" >> gnuplot_script #style du graphique (histogramme)
+			echo "set style fill solid border -1" >> gnuplot_script #remplissage des barres du graphique
+			echo "set boxwidth 0.8" >> gnuplot_script #largeur des barres
+			echo "unset border" >> gnuplot_script #pas de bords autour du graphique
+			echo "set ytics" >> gnuplot_script #affichage des marques sur l'axe des ordonnées
+			echo "set ylabel 'Quantité énergie consommée'" >> gnuplot_script #légende de l'axe des ordonnées
+			echo "set xtics rotate by -45" >> gnuplot_script #les marques de l'axe des abscisses sont affichés avec une rotation de 45 degres (pour éviter que les numéros se chevauchent)
+			echo "set xtics nomirror" >> gnuplot_script #permet d'éviter l'affichage des marques sur un autre axe plus haut
+			echo "set xlabel 'Identifiant'" >> gnuplot_script #légende de l'axe des abscisses
+			echo "set grid y" >> gnuplot_script #affichage d'une grille sur l'axe des ordonnées
+			echo "set arrow from screen 0, first 0 to screen 1, first 0 nohead lw 1 lc rgb 'black'" >> gnuplot_script #affichage d'une ligne noire sur l'axe des abscisses
+			echo "set datafile separator ':'" >> gnuplot_script #indique le séparateur de colonnes du fichier csv
+			echo "plot 'tmp/intermediaire.csv' using 4:xtic(1) with boxes lc rgb 'green' title 'Surproduction', 'tmp/intermediaire.csv' using 4:xtic(1) with boxes lc rgb 'red' title 'Sous-production'" >> gnuplot_script #trace le graphiques avec les données de la première et quatrième colonnes du fichier csv, légende des couleurs
+			gnuplot gnuplot_script #éxécute le script
+			rm gnuplot_script #supprime le fichier après son utilisation
+			
+
 		else
-			cut -d ';' -f 4-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | awk -F ':' '{print $0 ":" $2 - $3}' | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > intermediaire.csv
-			cut -d ':' -f 1,2,3 intermediaire.csv > lv_all_minmax.csv
+			cut -d ';' -f 4-8 $1 | tail -n+2 | grep -E "^[0-9]+;-;[0-9]+|^[0-9]+;-;-|^[0-9]+;[0-9]+;-" | cut -d ';' -f 1,4,5 | tr "-" "0" | ./exec | awk -F ':' '{print $0 ":" $2 - $3}' | sort -t ':' -k4 -n | tee | (head -10 ; tail -n10) > tmp/intermediaire.csv
+			cut -d ':' -f 1-3 tmp/intermediaire.csv > lv_all_minmax.csv
 			echo "Station $2 :Capacite :Consommateurs (tous)" | cat - lv_all_minmax.csv > tmp.csv && mv tmp.csv lv_all_minmax.csv
+			#fichier gnuplot pour le graphique
+			echo "set terminal png" > gnuplot_script #fichier PNG comme sortie
+			echo "set output 'graphs/postesLV_graph.png'" >> gnuplot_script #fichier sauvegardé dans le dossier graphs
+			echo "set style data histogram" >> gnuplot_script #style du graphique (histogramme)
+			echo "set style fill solid border -1" >> gnuplot_script #remplissage des barres du graphique
+			echo "set boxwidth 0.8" >> gnuplot_script #largeur des barres
+			echo "unset border" >> gnuplot_script #pas de bords autour du graphique
+			echo "set ytics" >> gnuplot_script #affichage des marques sur l'axe des ordonnées
+			echo "set ylabel 'Quantité énergie consommée'" >> gnuplot_script #légende de l'axe des ordonnées
+			echo "set xtics rotate by -45" >> gnuplot_script #les marques de l'axe des abscisses sont affichés avec une rotation de 45 degres (pour éviter que les numéros se chevauchent)
+			echo "set xtics nomirror" >> gnuplot_script #permet d'éviter l'affichage des marques sur un autre axe plus haut
+			echo "set xlabel 'Identifiant'" >> gnuplot_script #légende de l'axe des abscisses
+			echo "set grid y" >> gnuplot_script #affichage d'une grille sur l'axe des ordonnées
+			echo "set arrow from screen 0, first 0 to screen 1, first 0 nohead lw 1 lc rgb 'black'" >> gnuplot_script #affichage d'une ligne noire sur l'axe des abscisses
+			echo "set datafile separator ':'" >> gnuplot_script #indique le séparateur de colonnes du fichier csv
+			echo "plot 'tmp/intermediaire.csv' using 4:xtic(1) with boxes lc rgb 'green' title 'Surproduction', 'tmp/intermediaire.csv' using 4:xtic(1) with boxes lc rgb 'red' title 'Sous-production'" >> gnuplot_script #trace le graphiques avec les données de la première et quatrième colonnes du fichier csv, légende des couleurs
+			gnuplot gnuplot_script #éxécute le script
+			rm gnuplot_script #supprime le fichier après son utilisation
 		fi
 	fi
 	if [ "$nomConsommateur" = "indiv" ] ; then
