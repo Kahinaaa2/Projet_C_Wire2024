@@ -16,6 +16,6 @@ typedef struct AVL{
 #include "insertionavl.h"
 #include "fonction.h"
 
-void lire_donnees_en_bloc(AVL** station);
+void lireDonnees(AVL** station);
 
 #endif
