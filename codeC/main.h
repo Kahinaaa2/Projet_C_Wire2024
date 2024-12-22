@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BUFFER_SIZE 1024
-
 typedef struct AVL{
     long identifiant;
     long consommation;
